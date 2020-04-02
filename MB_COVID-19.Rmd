@@ -18,20 +18,21 @@ df$CumulHosp <- cumsum(df$NewHosp)
 
 Plot cumulative cases
 ```{r}
-gCC <- ggplot(df, aes(x = CumulDate, y = Cases)) +
-  geom_point() +
-  geom_line() +
+gCC <- ggplot(df, aes(x = CumulDate)) +
+  geom_point(aes(y = Cases, colour = "Cases")) +
+  geom_line(aes(y = Cases, colour = "Cases")) +
+  geom_point(aes(y = CumulHosp*10, colour = "Hospitalizations")) +
+  geom_line(aes(y = CumulHosp*10, colour = "Hospitalizations")) +
+  scale_y_continuous(breaks = seq(0, 125, by = 25), sec.axis = sec_axis(~ . / 10, name = "Cumulative hospitalizations")) +
   theme_bw() +
-  labs(x = "Days since first cases (March 12)", y ="Cumulative number of COVID-19 cases", caption ="Data source: Mantioba Health") 
+  scale_colour_manual(values = c("blue", "red")) +
+  labs(x = "Days since first cases (March 12)", y ="Cumulative cases", caption ="Data source: Government of Manitoba\n Code: github.com/acgerstein/COVID19-MB", title = "Manitoba COVID-19 data", colour = "") +
+  theme(legend.position = c(0.25, 0.85), plot.title = element_text(hjust = 0, vjust=2.12))
+
 gCC
 ```
 
-Plot number of hospitalizations
+Save
 ```{r}
-gCH <- ggplot(df, aes(x = CumulDate, y = CumulHosp)) +
-  geom_point() +
-  geom_line() +
-  theme_bw() +
-  labs(x = "Date", y ="Cumulative hospitalizations", caption = "Manitoba Health")
-gCH
+ggsave(filename = here("figures", "0401_MB.png"), plot = gCC, device = "png", height = 10, width = 10, units = "cm")
 ```
