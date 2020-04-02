@@ -1,0 +1,37 @@
+---
+title: "Covid cases in Manitoba"
+output: html_notebook
+---
+
+Libraries
+```{r}
+library(tidyverse)
+library(here)
+```
+
+Read in data
+```{r}
+df <- read_csv(here("data", "MB_data.csv"))
+df
+df$CumulHosp <- cumsum(df$NewHosp)
+```
+
+Plot cumulative cases
+```{r}
+gCC <- ggplot(df, aes(x = CumulDate, y = Cases)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Days since first cases (March 12)", y ="Cumulative number of COVID-19 cases", caption ="Data source: Mantioba Health") 
+gCC
+```
+
+Plot number of hospitalizations
+```{r}
+gCH <- ggplot(df, aes(x = CumulDate, y = CumulHosp)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Date", y ="Cumulative hospitalizations", caption = "Manitoba Health")
+gCH
+```
